@@ -1,0 +1,163 @@
+<IncomeWidget>:
+    size_hint: 1, None
+    height: 30
+
+<IncomeLayout>:
+    orientation: "vertical"
+    canvas.before:
+        Color:
+            rgba: 0, 1, 0.5, 0.2
+        Rectangle:
+            # self here refers to the widget i.e FloatLayout
+            pos: self.pos
+            size: self.size
+    spacing: 20
+
+    BoxLayout:
+        size_hint: 1, None
+        height: 30
+        orientation: "horizontal"
+        padding: 10, 10
+
+        Label:
+            size_hint: 0.15, 1
+            text: "ID"
+
+        Label:
+            text: "Amount"
+
+        Label:
+            text: "Date"
+
+        Label:
+            text: "Serial Nr"
+
+        Label:
+            size_hint: 0.5, 1
+            text: ""
+
+        Label:
+            size_hint: 0.5, 1
+            text: ""
+
+    ScrollView:
+        id: scroll
+        do_scroll_x: False  # Disable horizontal scrolling
+
+        BoxLayout:
+            id: income_entries
+            orientation: "vertical"
+            size_hint_y: None
+            height: self.minimum_height
+            spacing: 10
+
+    BoxLayout:
+        orientation: "horizontal"
+        size_hint: None, None
+        size: root.width, 30
+
+        TextInput:
+            id: amount_input
+            hint_text: "Amount"
+
+        TextInput:
+            id: date_input
+            hint_text: "Date"
+
+        TextInput:
+            id: serialnr_input
+            hint_text: "Serial Number"
+
+        Button:
+            text: "Add Income"
+            on_press: root.add_income()  # Bind to the add_income method of TaxCalculatorLayout
+
+        Button:
+            text: "Nuke DB"
+            on_press: root.nuke()  # Bind to the add_income method of TaxCalculatorLayout
+
+<ExpenseLayout>:
+    orientation: "vertical"
+    canvas.before:
+        Color:
+            rgba: 1, 0.2, 0.1, 0.2
+        Rectangle:
+            # self here refers to the widget i.e FloatLayout
+            pos: self.pos
+            size: self.size
+
+    Label:
+        size_hint: 1, 5
+        id: expenses_label
+        text: "Expenses will be displayed here"
+
+    BoxLayout:
+        orientation: "horizontal"
+        size_hint: None, None
+        size: root.width, 30
+
+        TextInput:
+            id: amount_input
+            hint_text: "Amount"
+
+        TextInput:
+            id: date_input
+            hint_text: "Date"
+        
+        TextInput:
+            id: deduct_percent_input
+            hint_text: "Deduct %"
+
+        TextInput:
+            id: serialnr_input
+            hint_text: "Serial Number"
+
+        Button:
+            text: "Add Expense"
+            on_press: root.add_expense()  # Bind to the add_income method of TaxCalculatorLayout
+
+<MainWindow>:
+    orientation: "vertical"
+    padding: "10dp"
+    spacing: "10dp"
+
+    BoxLayout:
+        orientation: "horizontal"
+        spacing: 10
+        
+        IncomeLayout:
+        ExpenseLayout:
+            
+    BoxLayout:
+        size_hint: 1, 0.2
+        canvas:
+            Color:
+                rgba: 1, 0, 0, 1  # Red color (replace with desired color values)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            id: test_label
+            text: "just some random text"
+
+    MyFirstWidget:
+        size_hint: 1, 0.2
+
+
+    Button:
+        text: "Reload"
+        size_hint: None, None
+        size: 100, 50
+        pos_hint: {'top': 1, 'left': 1}
+        on_press: app.reload_app(self)
+
+<MyFirstWidget>:
+    # both these variables can be the same name and this doesn't lead to
+    # an issue with uniqueness as the id is only accessible in kv.
+    txt_inpt: txt_inpt
+    Button:
+        id: f_but
+    TextInput:
+        id: txt_inpt
+        text: f_but.state
+        on_text: root.check_status(f_but)
