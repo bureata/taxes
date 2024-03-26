@@ -66,6 +66,8 @@
             TextInput:
                 size_hint: 0.5, 1
                 font_size: 20
+                input_type: 'number'
+                input_filter: 'float'
                 id: amount_input
                 multiline: False
 
@@ -195,6 +197,8 @@
 
         TextInput:
             id: amount_input
+            input_type: 'number'
+            input_filter: 'float'
             hint_text: 'Amount'
 
         TextInput:
@@ -207,11 +211,178 @@
 
         Button:
             text: 'Add Income'
-            on_press: root.add_income()  # Bind to the add_income method of TaxCalculatorLayout
+            on_press: root.add_income()
 
         Button:
             text: 'Nuke DB'
-            on_press: root.nuke()  # Bind to the add_income method of TaxCalculatorLayout
+            on_press: root.nuke()
+
+<EditExpensePopup>:
+    title_size: 20
+    title: 'Edit Expense'
+    size_hint: None, None
+    size: 1000, 230  # Adjust size as needed
+
+    BoxLayout:
+        orientation: 'vertical'
+
+        BoxLayout:
+            orientation: 'horizontal'
+            padding: 10
+
+            Label:
+                size_hint: 0.2, 1
+                font_size: 20
+                text: 'ID'
+
+            Label:
+                size_hint: 0.5, 1
+                font_size: 20
+                text: 'Amount'
+
+            Label:
+                font_size: 20
+                text: 'Date'
+
+            Label:
+                size_hint: 0.7, 1
+                font_size: 20
+                text: 'Deduct %'
+
+            Label:
+                font_size: 20
+                text: 'Serial Number'
+
+            Label:
+                font_size: 20
+                text: 'ID Expense'
+
+            Label
+                font_size: 20
+                text: 'ID Income'
+
+        BoxLayout:
+            orientation: 'horizontal'
+            padding: 10
+
+            Label:
+                size_hint: 0.2, 1
+                font_size: 20
+                text: root.id_prop
+
+            TextInput:
+                size_hint: 0.5, 1
+                font_size: 20
+                input_type: 'number'
+                input_filter: 'float'
+                id: amount_input
+                multiline: False
+
+            TextInput:
+                font_size: 20
+                id: date_input
+                multiline: False
+
+            TextInput:
+                font_size: 20
+                size_hint: 0.7, 1
+                input_type: 'number'
+                input_filter: 'float'
+                id: deduct_percent_input
+                multiline: False
+
+            TextInput:
+                font_size: 20
+                id: serialnr_input
+                multiline: False
+
+            TextInput:
+                font_size: 20
+                input_type: 'number'
+                input_filter: 'int'
+                id: id_expense_input
+                multiline: False
+
+            TextInput:
+                font_size: 20
+                input_type: 'number'
+                input_filter: 'int'
+                id: id_income_input
+                multiline: False
+
+        BoxLayout:
+            size_hint_y: None
+            height: '44dp'
+
+            Button:
+                text: 'Save'
+                on_press: root.save()
+
+            Button:
+                text: 'Cancel'
+                on_press: root.dismiss()
+
+<ExpenseWidget>:
+    orientation: 'horizontal'
+    size_hint: 1, None
+    height: 50
+    padding: [10, 10]
+
+    Label:
+        size_hint: 0.15, 1
+        widget: 10
+        font_size: 20
+        id: id_label
+        text: root.id_prop
+
+    Label:
+        size_hint: 0.5, 1
+        font_size: 20
+        id: amount_label
+        text: root.amount_prop
+    
+    Label:
+        font_size: 20
+        id: date_label
+        text: root.date_prop
+
+    Label:
+        size_hint: 0.7, 1
+        font_size: 20
+        id: deduct_percent_label
+        text: root.deduct_percent_prop
+
+    Label:
+        font_size: 20
+        id: serialnr_label
+        text: root.serialnr_prop
+
+    Label:
+        size_hint: 0.7, 1
+        font_size: 20
+        id: id_expense_label
+        text: root.id_expense_prop
+
+    Label:
+        size_hint: 0.7, 1
+        font_size: 20
+        id: id_income_label
+        text: root.id_income_prop
+
+    Button:
+        font_size: 20
+        size_hint: 0.5, 1
+        id: edit_button
+        text: 'Edit'
+        on_press: root.edit_expense()
+
+    Button:
+        font_size: 20
+        size_hint: 0.5, 1
+        id: delete_button
+        text: 'Delete'
+        on_press: root.delete_expense() 
+
 
 <ExpenseLayout>:
     orientation: 'vertical'
@@ -223,10 +394,65 @@
             pos: self.pos
             size: self.size
 
-    Label:
-        size_hint: 1, 5
-        id: expenses_label
-        text: 'Expenses will be displayed here'
+    BoxLayout:
+        size_hint: 1, None
+        height: 30
+        orientation: 'horizontal'
+        padding: 10, 10
+
+        Label:
+            size_hint: 0.15, 1
+            font_size: 20
+            text: 'ID'
+
+        Label:
+            size_hint: 0.5, 1
+            font_size: 20
+            text: 'Amount'
+
+        Label:
+            font_size: 20
+            text: 'Date'
+
+        Label:
+            size_hint: 0.7, 1
+            font_size: 20
+            text: 'Deduct %'
+
+        Label:
+            font_size: 20
+            text: 'Serial Nr'
+
+        Label:
+            size_hint: 0.7, 1
+            font_size: 20
+            text: 'ID Expense'
+
+        Label:
+            size_hint: 0.7, 1
+            font_size: 20
+            text: 'ID Income'
+
+        Label:
+            size_hint: 0.5, 1
+            font_size: 20
+            text: ''
+
+        Label:
+            size_hint: 0.5, 1
+            font_size: 20
+            text: ''
+
+    ScrollView:
+        id: scroll
+        do_scroll_x: False  # Disable horizontal scrolling
+
+        BoxLayout:
+            id: expense_entries
+            orientation: 'vertical'
+            size_hint_y: None
+            height: self.minimum_height
+            spacing: 10
 
     BoxLayout:
         orientation: 'horizontal'
@@ -234,7 +460,10 @@
         size: root.width, 30
 
         TextInput:
+            size_hint: 0.7, 1
             id: amount_input
+            input_type: 'number'
+            input_filter: 'float'
             hint_text: 'Amount'
 
         TextInput:
@@ -242,16 +471,33 @@
             hint_text: 'Date'
         
         TextInput:
+            size_hint: 0.7, 1
             id: deduct_percent_input
-            hint_text: 'Deduct %'
+            input_type: 'number'
+            input_filter: 'float'
+            hint_text: 'Deduct % (100)'
 
         TextInput:
             id: serialnr_input
             hint_text: 'Serial Number'
 
+        TextInput:
+            size_hint: 0.7, 1
+            id: id_expense_input
+            input_type: 'number'
+            input_filter: 'int'
+            hint_text: 'ID Expense'
+
+        TextInput:
+            size_hint: 0.7, 1
+            id: id_income_input
+            input_type: 'number'
+            input_filter: 'int'
+            hint_text: 'ID Income'
+
         Button:
             text: 'Add Expense'
-            on_press: root.add_expense()  # Bind to the add_income method of TaxCalculatorLayout
+            on_press: root.add_expense()
 
 <MainWindow>:
     orientation: 'vertical'
@@ -263,6 +509,7 @@
         spacing: 10
         
         IncomeLayout:
+            size_hint: 0.8, 1
         ExpenseLayout:
             
     BoxLayout:
