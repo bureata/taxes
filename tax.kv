@@ -1,9 +1,140 @@
+<DeletePopup>:
+    size_hint: 0.6, 0.3
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    BoxLayout:
+        orientation: 'vertical'
+
+        Label:
+            font_size: 30
+            text: root.message_prop
+        
+        Label:
+            font_size: 19
+            text: root.details_prop
+
+        BoxLayout:
+            orientation: 'horizontal'
+
+            Button:
+                text: 'Yes'
+                on_press: root.confirm()
+
+            Button:
+                text: 'No'
+                on_press: root.dismiss()
+
+<EditIncomePopup>:
+    title_size: 20
+    title: 'Edit Income'
+    size_hint: None, None
+    size: 500, 230  # Adjust size as needed
+
+    BoxLayout:
+        orientation: 'vertical'
+
+        BoxLayout:
+            orientation: 'horizontal'
+            padding: 10
+
+            Label:
+                size_hint: 0.2, 1
+                font_size: 20
+                text: 'ID'
+
+            Label:
+                size_hint: 0.5, 1
+                font_size: 20
+                text: 'Amount'
+
+            Label:
+                font_size: 20
+                text: 'Date'
+
+            Label:
+                font_size: 20
+                text: 'Serial Number'
+
+        BoxLayout:
+            orientation: 'horizontal'
+            padding: 10
+
+            Label:
+                size_hint: 0.2, 1
+                font_size: 20
+                text: root.id_prop
+
+            TextInput:
+                size_hint: 0.5, 1
+                font_size: 20
+                id: amount_input
+                multiline: False
+
+            TextInput:
+                font_size: 20
+                id: date_input
+                multiline: False
+
+            TextInput:
+                font_size: 20
+                id: serialnr_input
+                multiline: False
+
+        BoxLayout:
+            size_hint_y: None
+            height: '44dp'
+
+            Button:
+                text: 'Save'
+                on_press: root.save()
+
+            Button:
+                text: 'Cancel'
+                on_press: root.dismiss()
+
 <IncomeWidget>:
+    orientation: 'horizontal'
     size_hint: 1, None
-    height: 30
+    height: 50
+    padding: [10, 10]
+
+    Label:
+        size_hint: 0.15, 1
+        widget: 10
+        font_size: 20
+        id: id_label
+        text: root.id_prop
+
+    Label:
+        font_size: 20
+        id: amount_label
+        text: root.amount_prop
+    
+    Label:
+        font_size: 20
+        id: date_label
+        text: root.date_prop
+
+    Label:
+        font_size: 20
+        id: serialnr_label
+        text: root.serialnr_prop
+
+    Button:
+        font_size: 20
+        size_hint: 0.5, 1
+        id: edit_button
+        text: 'Edit'
+        on_press: root.edit_income()
+
+    Button:
+        font_size: 20
+        size_hint: 0.5, 1
+        id: delete_button
+        text: 'Delete'
+        on_press: root.delete_income() 
 
 <IncomeLayout>:
-    orientation: "vertical"
+    orientation: 'vertical'
     canvas.before:
         Color:
             rgba: 0, 1, 0.5, 0.2
@@ -16,29 +147,35 @@
     BoxLayout:
         size_hint: 1, None
         height: 30
-        orientation: "horizontal"
+        orientation: 'horizontal'
         padding: 10, 10
 
         Label:
             size_hint: 0.15, 1
-            text: "ID"
+            font_size: 20
+            text: 'ID'
 
         Label:
-            text: "Amount"
+            font_size: 20
+            text: 'Amount'
 
         Label:
-            text: "Date"
+            font_size: 20
+            text: 'Date'
 
         Label:
-            text: "Serial Nr"
+            font_size: 20
+            text: 'Serial Nr'
 
         Label:
             size_hint: 0.5, 1
-            text: ""
+            font_size: 20
+            text: ''
 
         Label:
             size_hint: 0.5, 1
-            text: ""
+            font_size: 20
+            text: ''
 
     ScrollView:
         id: scroll
@@ -46,38 +183,38 @@
 
         BoxLayout:
             id: income_entries
-            orientation: "vertical"
+            orientation: 'vertical'
             size_hint_y: None
             height: self.minimum_height
             spacing: 10
 
     BoxLayout:
-        orientation: "horizontal"
+        orientation: 'horizontal'
         size_hint: None, None
         size: root.width, 30
 
         TextInput:
             id: amount_input
-            hint_text: "Amount"
+            hint_text: 'Amount'
 
         TextInput:
             id: date_input
-            hint_text: "Date"
+            hint_text: 'Date'
 
         TextInput:
             id: serialnr_input
-            hint_text: "Serial Number"
+            hint_text: 'Serial Number'
 
         Button:
-            text: "Add Income"
+            text: 'Add Income'
             on_press: root.add_income()  # Bind to the add_income method of TaxCalculatorLayout
 
         Button:
-            text: "Nuke DB"
+            text: 'Nuke DB'
             on_press: root.nuke()  # Bind to the add_income method of TaxCalculatorLayout
 
 <ExpenseLayout>:
-    orientation: "vertical"
+    orientation: 'vertical'
     canvas.before:
         Color:
             rgba: 1, 0.2, 0.1, 0.2
@@ -89,40 +226,40 @@
     Label:
         size_hint: 1, 5
         id: expenses_label
-        text: "Expenses will be displayed here"
+        text: 'Expenses will be displayed here'
 
     BoxLayout:
-        orientation: "horizontal"
+        orientation: 'horizontal'
         size_hint: None, None
         size: root.width, 30
 
         TextInput:
             id: amount_input
-            hint_text: "Amount"
+            hint_text: 'Amount'
 
         TextInput:
             id: date_input
-            hint_text: "Date"
+            hint_text: 'Date'
         
         TextInput:
             id: deduct_percent_input
-            hint_text: "Deduct %"
+            hint_text: 'Deduct %'
 
         TextInput:
             id: serialnr_input
-            hint_text: "Serial Number"
+            hint_text: 'Serial Number'
 
         Button:
-            text: "Add Expense"
+            text: 'Add Expense'
             on_press: root.add_expense()  # Bind to the add_income method of TaxCalculatorLayout
 
 <MainWindow>:
-    orientation: "vertical"
-    padding: "10dp"
-    spacing: "10dp"
+    orientation: 'vertical'
+    padding: '10dp'
+    spacing: '10dp'
 
     BoxLayout:
-        orientation: "horizontal"
+        orientation: 'horizontal'
         spacing: 10
         
         IncomeLayout:
@@ -138,14 +275,14 @@
                 size: self.size
         Label:
             id: test_label
-            text: "just some random text"
+            text: 'just some random text'
 
     MyFirstWidget:
         size_hint: 1, 0.2
 
 
     Button:
-        text: "Reload"
+        text: 'Reload'
         size_hint: None, None
         size: 100, 50
         pos_hint: {'top': 1, 'left': 1}
