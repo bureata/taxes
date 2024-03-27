@@ -289,8 +289,10 @@ class ExpenseLayout(BoxLayout):
         self.ids.serialnr_input.text = ''
         self.ids.vat_check.active = False
 
+
 class MainWindow(BoxLayout):
     pass
+
 
 if __name__ == '__main__':
     TaxApp().run()
