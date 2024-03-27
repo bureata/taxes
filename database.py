@@ -14,8 +14,8 @@ class Database():
             amount REAL NOT NULL CHECK(amount > 0),
             date DATE NOT NULL,
             serialnr TEXT UNIQUE,
-            document TEXT UNIQUE,
-            details TEXT
+            details TEXT,
+            document TEXT UNIQUE
             );
             """
         )
@@ -30,8 +30,9 @@ class Database():
             serialnr TEXT UNIQUE,
             id_expense INTEGER,
             id_income INTEGER,
-            document TEXT UNIQUE,
+            vat_check INTEGER NOT NULL DEFAULT 0,
             details TEXT,
+            document TEXT UNIQUE,
             FOREIGN KEY (id_expense) REFERENCES expense(id),
             FOREIGN KEY (id_income) REFERENCES income(id)
             );
@@ -41,36 +42,47 @@ class Database():
         con.commit()
         con.close()
 
-    def record_income(self, amount, date=None, serialnr=None, document=None, details=''):
+    def record_income(self, amount, date=None, serialnr=None, details=None, document=None):
         con = sqlite3.connect("tax.db")
         cursor = con.cursor()
 
         query = """
-        INSERT INTO income(amount, date, serialnr, document, details)
+        INSERT INTO income(amount, date, serialnr, details, document)
         VALUES(?, ?, ?, ?, ?)
         """
         if date is None:
             date = datetime.now().date()
 
-        params = (amount, date, serialnr, document, details)
+        params = (amount, date, serialnr, details, document)
 
         cursor.execute(query, params)
         con.commit()
         con.close()
 
-    def record_expense(self, amount, date=None, deduct_percent=100, serialnr=None, id_expense=None, id_income=None, document=None, details=''):
+    def record_expense(
+            self, amount,
+            date=None,
+            deduct_percent=100,
+            serialnr=None,
+            id_expense=None,
+            id_income=None,
+            vat_check = 0,
+            document=None,
+            details=''
+            ):
         con = sqlite3.connect("tax.db")
         cursor = con.cursor()
 
         query = """
-        INSERT INTO expense(amount, date, deduct_percent, serialnr, id_expense, id_income, document, details)
-        VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO expense(amount, date, deduct_percent, serialnr, id_expense, id_income, vat_check, details, document)
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
         """
         if date is None:
             date = datetime.now().date()
 
-        params = (amount, date, deduct_percent, serialnr, id_expense, id_income, document, details)
+        params = (amount, date, deduct_percent, serialnr, id_expense, id_income, vat_check, details, document)
 
+        print(query)
         cursor.execute(query, params)
         con.commit()
         con.close()
@@ -99,7 +111,7 @@ class Database():
 
         return expenses
 
-    def update_income(self, income_id, amount=None, date=None, serialnr=None, document=None, details=None):
+    def update_income(self, income_id, amount=None, date=None, serialnr=None, details=None, document=None):
         con = sqlite3.connect("tax.db")
         cursor = con.cursor()
 
@@ -113,10 +125,10 @@ class Database():
             updates.append(f"date = '{date}'")
         if serialnr is not None:
             updates.append(f"serialnr = '{serialnr}'")
-        if document is not None:
-            updates.append(f"document = '{document}'")
         if details is not None:
             updates.append(f"details = '{details}'")
+        if document is not None:
+            updates.append(f"document = '{document}'")
 
         query += ", ".join(updates)
         query += f" WHERE id = {income_id};"
@@ -125,7 +137,19 @@ class Database():
         con.commit()
         con.close()
 
-    def update_expense(self, expense_id, amount=None, date=None, deduct_percent=None, serialnr=None, id_expense=None, id_income=None, document=None, details=None):
+    def update_expense(
+            self,
+            expense_id,
+            amount=None,
+            date=None,
+            deduct_percent=None,
+            serialnr=None,
+            id_expense=None,
+            id_income=None,
+            vat_check=0,
+            document=None,
+            details=None
+            ):
         con = sqlite3.connect("tax.db")
         cursor = con.cursor()
 
@@ -145,15 +169,17 @@ class Database():
             updates.append(f"id_expense = '{id_expense}'")
         if id_income is not None:
             updates.append(f"id_income = '{id_income}'")
-        if document is not None:
-            updates.append(f"document = '{document}'")
+        if vat_check is not None:
+            updates.append(f"id_income = {vat_check}")
         if details is not None:
             updates.append(f"details = '{details}'")
+        if document is not None:
+            updates.append(f"document = '{document}'")
 
         query += ", ".join(updates)
         query += f" WHERE id = {expense_id};"
 
-        print(query)
+        # print(query)
         cursor.execute(query)
         con.commit()
         con.close()

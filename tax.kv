@@ -199,14 +199,17 @@
             id: amount_input
             input_type: 'number'
             input_filter: 'float'
+            multiline: False
             hint_text: 'Amount'
 
         TextInput:
             id: date_input
+            multiline: False
             hint_text: 'Date'
 
         TextInput:
             id: serialnr_input
+            multiline: False
             hint_text: 'Serial Number'
 
         Button:
@@ -260,6 +263,11 @@
             Label
                 font_size: 20
                 text: 'ID Income'
+            
+            Label
+                size_hint: 0.3, 1
+                font_size: 20
+                text: 'VAT'
 
         BoxLayout:
             orientation: 'horizontal'
@@ -309,6 +317,12 @@
                 input_filter: 'int'
                 id: id_income_input
                 multiline: False
+
+            CheckBox:
+                size_hint: 0.3, 1
+                id: vat_check
+                active: True if root.check_vat_prop else False
+                #on_active: root.on_checkbox_active(self, self.active)
 
         BoxLayout:
             size_hint_y: None
@@ -368,6 +382,12 @@
         font_size: 20
         id: id_income_label
         text: root.id_income_prop
+
+    Label:
+        size_hint: 0.3, 1
+        font_size: 20
+        id: check_vat
+        text: 'yes' if root.check_vat_prop else 'no'
 
     Button:
         font_size: 20
@@ -432,6 +452,11 @@
             size_hint: 0.7, 1
             font_size: 20
             text: 'ID Income'
+        
+        Label:
+            size_hint: 0.3, 1
+            font_size: 20
+            text: 'VAT'
 
         Label:
             size_hint: 0.5, 1
@@ -464,6 +489,7 @@
             id: amount_input
             input_type: 'number'
             input_filter: 'float'
+            multiline: False
             hint_text: 'Amount'
 
         TextInput:
@@ -475,6 +501,7 @@
             id: deduct_percent_input
             input_type: 'number'
             input_filter: 'float'
+            multiline: False
             hint_text: 'Deduct % (100)'
 
         TextInput:
@@ -482,18 +509,30 @@
             hint_text: 'Serial Number'
 
         TextInput:
-            size_hint: 0.7, 1
+            size_hint: 0.6, 1
             id: id_expense_input
             input_type: 'number'
             input_filter: 'int'
+            multiline: False
             hint_text: 'ID Expense'
 
         TextInput:
-            size_hint: 0.7, 1
+            size_hint: 0.6, 1
             id: id_income_input
             input_type: 'number'
             input_filter: 'int'
+            multiline: False
             hint_text: 'ID Income'
+
+        Label:
+            size_hint: 0.3, 1
+            text: 'VAT:'
+
+        CheckBox:
+            size_hint: 0.4, 1
+            id: vat_check
+            active: False
+            #on_active: root.on_checkbox_active(self, self.active)
 
         Button:
             text: 'Add Expense'
@@ -524,24 +563,9 @@
             id: test_label
             text: 'just some random text'
 
-    MyFirstWidget:
-        size_hint: 1, 0.2
-
-
     Button:
         text: 'Reload'
         size_hint: None, None
         size: 100, 50
         pos_hint: {'top': 1, 'left': 1}
         on_press: app.reload_app(self)
-
-<MyFirstWidget>:
-    # both these variables can be the same name and this doesn't lead to
-    # an issue with uniqueness as the id is only accessible in kv.
-    txt_inpt: txt_inpt
-    Button:
-        id: f_but
-    TextInput:
-        id: txt_inpt
-        text: f_but.state
-        on_text: root.check_status(f_but)

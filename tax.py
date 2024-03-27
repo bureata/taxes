@@ -4,7 +4,7 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.clock import Clock
-from kivy.properties import ObjectProperty, StringProperty
+from kivy.properties import ObjectProperty, StringProperty, NumericProperty
 
 from kivy.config import Config
 Config.set('graphics', 'width', '1680')
@@ -51,9 +51,6 @@ class DeletePopup(Popup):
 
 class EditIncomePopup(Popup):
     id_prop = StringProperty()
-    # amount_prop = StringProperty()
-    # date_prop = StringProperty()
-    # serialnr_prop = StringProperty()
 
     def __init__(self, income_data, callback, **kwargs):
         super(EditIncomePopup, self).__init__(**kwargs)
@@ -109,7 +106,6 @@ class IncomeWidget(BoxLayout):
     def delete_income(self):
         def confirmed_deletion():
             # Delete the income record from the database
-            # Implement your logic to delete the record
             print(f"Deleting income with id {self.id_prop}:\n{self.income_data}")
             self.parent.parent.parent.db.del_income(self.income_data[0])
             self.parent.remove_widget(self)
@@ -160,6 +156,7 @@ class IncomeLayout(BoxLayout):
 
 class EditExpensePopup(Popup):
     id_prop = StringProperty()
+    check_vat_prop = NumericProperty()
 
     def __init__(self, expense_data, callback, **kwargs):
         super(EditExpensePopup, self).__init__(**kwargs)
@@ -172,8 +169,11 @@ class EditExpensePopup(Popup):
         self.ids.serialnr_input.text = str(expense_data[4])
         self.ids.id_expense_input.text = str(expense_data[5])
         self.ids.id_income_input.text = str(expense_data[6])
+        self.check_vat_prop = expense_data[7]
+
     
     def save(self):
+        check_vat = 1 if self.ids.vat_check.active else 0
         updated_data = (
             self.id_prop,
             self.ids.amount_input.text,
@@ -181,7 +181,10 @@ class EditExpensePopup(Popup):
             self.ids.deduct_percent_input.text,
             self.ids.serialnr_input.text,
             self.ids.id_expense_input.text,
-            self.ids.id_income_input.text
+            self.ids.id_income_input.text,
+            check_vat,
+            None,
+            None
         )
         self.callback(updated_data)
         self.dismiss()
@@ -195,6 +198,7 @@ class ExpenseWidget(BoxLayout):
     id_expense_prop = StringProperty()
     id_income_prop = StringProperty()
     serialnr_prop = StringProperty()
+    check_vat_prop = NumericProperty()
 
     def __init__(self, expense_data, **kwargs):
         super(ExpenseWidget, self).__init__(**kwargs)
@@ -209,6 +213,7 @@ class ExpenseWidget(BoxLayout):
         self.serialnr_prop = str(self.expense_data[4])
         self.id_expense_prop = str(self.expense_data[5])
         self.id_income_prop = str(self.expense_data[6])
+        self.check_vat_prop = self.expense_data[7]
 
     def edit_expense(self):
         # method that handles the data returned by the popup
@@ -216,7 +221,7 @@ class ExpenseWidget(BoxLayout):
             if self.expense_data != edited_data:
                 self.expense_data = edited_data
                 self.update_props()
-                print(self.expense_data)
+                print('from edit expense popup:', self.expense_data)
                 self.parent.parent.parent.db.update_expense(*self.expense_data)
 
         # Create and open the input popup
@@ -226,7 +231,6 @@ class ExpenseWidget(BoxLayout):
     def delete_expense(self):
         def confirmed_deletion():
             # Delete the expense record from the database
-            # Implement your logic to delete the record
             print(f"Deleting expense with id {self.id_prop}:\n{self.expense_data}")
             self.parent.parent.parent.db.del_expense(self.expense_data[0])
             self.parent.remove_widget(self)
@@ -253,11 +257,13 @@ class ExpenseLayout(BoxLayout):
         id_expense = self.ids.id_expense_input.text
         id_income = self.ids.id_income_input.text
         serialnr = self.ids.serialnr_input.text
+        vat_check = 1 if self.ids.vat_check.active else 0
+        print(f'vat check: {vat_check}')
         attrs = [attr if attr != '' else None for attr in [serialnr, deduct_percent, id_expense, id_income]]
         if amount != '':
             if not attrs[0]:
                 attrs[0] = 100
-            self.db.record_expense(amount, date, *attrs)
+            self.db.record_expense(amount, date, *attrs, vat_check=vat_check)
             self.update_expense_display()
         self.clear_input()
 
@@ -281,19 +287,10 @@ class ExpenseLayout(BoxLayout):
         self.ids.id_expense_input.text = ''
         self.ids.id_income_input.text = ''
         self.ids.serialnr_input.text = ''
+        self.ids.vat_check.active = False
 
 class MainWindow(BoxLayout):
     pass
-
-
-from kivy.properties import ObjectProperty
-class MyFirstWidget(BoxLayout):
-
-    txt_inpt = ObjectProperty(None)
-
-    def check_status(self, btn):
-        print('button state is: {state}'.format(state=btn.state))
-        print('text input text is: {txt}'.format(txt=self.txt_inpt))
 
 if __name__ == '__main__':
     TaxApp().run()
