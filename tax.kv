@@ -1,4 +1,4 @@
-<DeletePopup>:
+<DeletePopup>
     size_hint: 0.6, 0.3
     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
     BoxLayout:
@@ -23,7 +23,7 @@
                 text: 'No'
                 on_press: root.dismiss()
 
-<EditIncomePopup>:
+<EditIncomePopup>
     title_size: 20
     title: 'Edit Income'
     size_hint: None, None
@@ -64,6 +64,7 @@
                 text: root.id_prop
 
             TextInput:
+                write_tab: False
                 size_hint: 0.5, 1
                 font_size: 20
                 input_type: 'number'
@@ -72,11 +73,13 @@
                 multiline: False
 
             TextInput:
+                write_tab: False
                 font_size: 20
                 id: date_input
                 multiline: False
 
             TextInput:
+                write_tab: False
                 font_size: 20
                 id: serialnr_input
                 multiline: False
@@ -93,7 +96,7 @@
                 text: 'Cancel'
                 on_press: root.dismiss()
 
-<IncomeWidget>:
+<IncomeWidget>
     orientation: 'horizontal'
     size_hint: 1, None
     height: 50
@@ -135,7 +138,7 @@
         text: 'Delete'
         on_press: root.delete_income() 
 
-<IncomeLayout>:
+<IncomeLayout>
     orientation: 'vertical'
     canvas.before:
         Color:
@@ -179,6 +182,39 @@
             font_size: 20
             text: ''
 
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint: None, None
+        height: 30 + 2 * 10
+        width: root.width
+        padding: 10, 10
+
+        Label:
+            id: income_id
+            size_hint: 0.15, 1
+
+        TextInput:
+            write_tab: False
+            id: amount_input
+            input_type: 'number'
+            input_filter: 'float'
+            multiline: False
+
+        TextInput:
+            write_tab: False
+            id: date_input
+            multiline: False
+
+        TextInput:
+            write_tab: False
+            id: serialnr_input
+            multiline: False
+
+        Button:
+            size_hint: 1, 1
+            text: 'Add Income'
+            on_press: root.add_income()
+
     ScrollView:
         id: scroll
         do_scroll_x: False  # Disable horizontal scrolling
@@ -190,37 +226,12 @@
             height: self.minimum_height
             spacing: 10
 
-    BoxLayout:
-        orientation: 'horizontal'
-        size_hint: None, None
-        size: root.width, 30
+#    Button:
+#        size_hint: 1, 0.1
+#        text: 'Nuke DB'
+#        on_press: root.nuke()
 
-        TextInput:
-            id: amount_input
-            input_type: 'number'
-            input_filter: 'float'
-            multiline: False
-            hint_text: 'Amount'
-
-        TextInput:
-            id: date_input
-            multiline: False
-            hint_text: 'Date'
-
-        TextInput:
-            id: serialnr_input
-            multiline: False
-            hint_text: 'Serial Number'
-
-        Button:
-            text: 'Add Income'
-            on_press: root.add_income()
-
-        Button:
-            text: 'Nuke DB'
-            on_press: root.nuke()
-
-<EditExpensePopup>:
+<EditExpensePopup>
     title_size: 20
     title: 'Edit Expense'
     size_hint: None, None
@@ -279,6 +290,7 @@
                 text: root.id_prop
 
             TextInput:
+                write_tab: False
                 size_hint: 0.5, 1
                 font_size: 20
                 input_type: 'number'
@@ -287,11 +299,13 @@
                 multiline: False
 
             TextInput:
+                write_tab: False
                 font_size: 20
                 id: date_input
                 multiline: False
 
             TextInput:
+                write_tab: False
                 font_size: 20
                 size_hint: 0.7, 1
                 input_type: 'number'
@@ -300,11 +314,13 @@
                 multiline: False
 
             TextInput:
+                write_tab: False
                 font_size: 20
                 id: serialnr_input
                 multiline: False
 
             TextInput:
+                write_tab: False
                 font_size: 20
                 input_type: 'number'
                 input_filter: 'int'
@@ -312,6 +328,7 @@
                 multiline: False
 
             TextInput:
+                write_tab: False
                 font_size: 20
                 input_type: 'number'
                 input_filter: 'int'
@@ -336,7 +353,7 @@
                 text: 'Cancel'
                 on_press: root.dismiss()
 
-<ExpenseWidget>:
+<ExpenseWidget>
     orientation: 'horizontal'
     size_hint: 1, None
     height: 50
@@ -404,7 +421,7 @@
         on_press: root.delete_expense() 
 
 
-<ExpenseLayout>:
+<ExpenseLayout>
     orientation: 'vertical'
     canvas.before:
         Color:
@@ -413,6 +430,7 @@
             # self here refers to the widget i.e FloatLayout
             pos: self.pos
             size: self.size
+    spacing: 20
 
     BoxLayout:
         size_hint: 1, None
@@ -468,6 +486,68 @@
             font_size: 20
             text: ''
 
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint: None, None
+        height: 30 + 2 * 10
+        width: root.width
+        padding: 10, 10
+
+        Label:
+            size_hint: 0.15, 1
+
+        TextInput:
+            write_tab: False
+            size_hint: 0.5, 1
+            id: amount_input
+            input_type: 'number'
+            input_filter: 'float'
+            multiline: False
+
+        TextInput:
+            write_tab: False
+            id: date_input
+        
+        TextInput:
+            write_tab: False
+            size_hint: 0.7, 1
+            id: deduct_percent_input
+            input_type: 'number'
+            input_filter: 'float'
+            multiline: False
+            text: '100'
+
+        TextInput:
+            write_tab: False
+            id: serialnr_input
+
+        TextInput:
+            write_tab: False
+            size_hint: 0.7, 1
+            id: id_expense_input
+            input_type: 'number'
+            input_filter: 'int'
+            multiline: False
+
+        TextInput:
+            write_tab: False
+            size_hint: 0.7, 1
+            id: id_income_input
+            input_type: 'number'
+            input_filter: 'int'
+            multiline: False
+
+        CheckBox:
+            size_hint: 0.3, 1
+            id: vat_check
+            active: False
+            #on_active: root.on_checkbox_active(self, self.active)
+
+        Button:
+            size_hint: 1, 1
+            text: 'Add Expense'
+            on_press: root.add_expense()
+
     ScrollView:
         id: scroll
         do_scroll_x: False  # Disable horizontal scrolling
@@ -479,66 +559,64 @@
             height: self.minimum_height
             spacing: 10
 
+<TaxesLayout>
+    orientation: 'vertical'
+    size_hint: 1, 0.1
+    canvas:
+        Color:
+            rgba: 0.01, 0.1, 0.1, 1  # Red color (replace with desired color values)
+        Rectangle:
+            pos: self.pos
+            size: self.size
     BoxLayout:
         orientation: 'horizontal'
-        size_hint: None, None
-        size: root.width, 30
-
-        TextInput:
-            size_hint: 0.7, 1
-            id: amount_input
-            input_type: 'number'
-            input_filter: 'float'
-            multiline: False
-            hint_text: 'Amount'
-
-        TextInput:
-            id: date_input
-            hint_text: 'Date'
-        
-        TextInput:
-            size_hint: 0.7, 1
-            id: deduct_percent_input
-            input_type: 'number'
-            input_filter: 'float'
-            multiline: False
-            hint_text: 'Deduct % (100)'
-
-        TextInput:
-            id: serialnr_input
-            hint_text: 'Serial Number'
-
-        TextInput:
-            size_hint: 0.6, 1
-            id: id_expense_input
-            input_type: 'number'
-            input_filter: 'int'
-            multiline: False
-            hint_text: 'ID Expense'
-
-        TextInput:
-            size_hint: 0.6, 1
-            id: id_income_input
-            input_type: 'number'
-            input_filter: 'int'
-            multiline: False
-            hint_text: 'ID Income'
-
         Label:
-            size_hint: 0.3, 1
-            text: 'VAT:'
+            text: "Total income"
+        Label:
+            text: "Total expense"
+        Label:
+            text: "Deductible"
+        Label:
+            text: "CASS (10%)"
+        Label:
+            text: "CAS (25%)"
+        Label:
+            text: "Income TAX"
+        Label:
+            text: "Total TAXES"
+        Label:
+            text: "Profit"
+    BoxLayout:
+        orientation: 'horizontal'
+        Label:
+            id: income
+            text: f'{root.income:.2f}'
+        Label:
+            id: expense
+            text: f'{root.expense:.2f}'
+        Label:
+            id: deductible
+            text: f'{root.deductible:.2f}'
+        Label:
+            id: cass
+            text: f'{root.cass:.2f}'
+        Label:
+            id: cas
+            text: f'{root.cas:.2f}'
+        Label:
+            id: income_tax
+            text: f'{root.income_tax:.2f}'
+        Label:
+            id: total_tax
+            text: f'{root.total_tax:.2f}'
+        Label:
+            id: profit
+            text: f'{root.profit:.2f}'
+    Button:
+        text: 'Refresh'
+        on_press: root.update_widget()
 
-        CheckBox:
-            size_hint: 0.4, 1
-            id: vat_check
-            active: False
-            #on_active: root.on_checkbox_active(self, self.active)
-
-        Button:
-            text: 'Add Expense'
-            on_press: root.add_expense()
-
-<MainWindow>:
+<MainWindow>
     orientation: 'vertical'
     padding: '10dp'
     spacing: '10dp'
@@ -551,17 +629,9 @@
             size_hint: 0.8, 1
         ExpenseLayout:
             
-    BoxLayout:
-        size_hint: 1, 0.2
-        canvas:
-            Color:
-                rgba: 1, 0, 0, 1  # Red color (replace with desired color values)
-            Rectangle:
-                pos: self.pos
-                size: self.size
-        Label:
-            id: test_label
-            text: 'just some random text'
+    TaxesLayout:
+        id: taxes_layout
+        
 
     Button:
         text: 'Reload'

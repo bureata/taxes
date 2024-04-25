@@ -1,5 +1,10 @@
 import sqlite3
 from datetime import datetime
+import re
+
+date_pattern_hyphen = re.compile(r'\b\d{4}-\d{2}-\d{2}\b')
+date_pattern_underscore = re.compile(r'\b\d{4}_\d{2}_\d{2}\b')
+date_pattern_period = re.compile(r'\b\d{4}\.\d{2}\.\d{2}\b')
 
 class Database():
     
@@ -42,6 +47,18 @@ class Database():
         con.commit()
         con.close()
 
+    def check_date_format(self, date):
+        if date is None:
+            date = datetime.now().date()
+        else:
+            if date_pattern_hyphen.match(date):
+                date = datetime.strptime(date, "%Y-%m-%d").date()
+            elif date_pattern_underscore.match(date):
+                datetime.strptime(date, "%Y_%m_%d").date()
+            elif date_pattern_period.match(date):
+                date = datetime.strptime(date, "%Y.%m.%d").date()
+        return date
+
     def record_income(self, amount, date=None, serialnr=None, details=None, document=None):
         con = sqlite3.connect("tax.db")
         cursor = con.cursor()
@@ -50,10 +67,11 @@ class Database():
         INSERT INTO income(amount, date, serialnr, details, document)
         VALUES(?, ?, ?, ?, ?)
         """
-        if date is None:
-            date = datetime.now().date()
+        date = self.check_date_format(date)
 
         params = (amount, date, serialnr, details, document)
+
+        # print(params)
 
         cursor.execute(query, params)
         con.commit()
@@ -77,12 +95,12 @@ class Database():
         INSERT INTO expense(amount, date, deduct_percent, serialnr, id_expense, id_income, vat_check, details, document)
         VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
         """
-        if date is None:
-            date = datetime.now().date()
+        date = self.check_date_format(date)
 
         params = (amount, date, deduct_percent, serialnr, id_expense, id_income, vat_check, details, document)
 
-        print(query)
+        # print(params)
+
         cursor.execute(query, params)
         con.commit()
         con.close()
@@ -115,20 +133,32 @@ class Database():
         con = sqlite3.connect("tax.db")
         cursor = con.cursor()
 
+        date = self.check_date_format(date)
+
         # Construct the UPDATE query dynamically based on provided parameters
         query = "UPDATE income SET "
         updates = []
 
         if amount is not None:
             updates.append(f"amount = {amount}")
-        if date is not None:
+        if date is None:
+            updates.append(f"date = NULL")
+        else:
             updates.append(f"date = '{date}'")
-        if serialnr is not None:
+        if serialnr is None:
+            updates.append(f"serialnr = NULL")
+        else:
             updates.append(f"serialnr = '{serialnr}'")
-        if details is not None:
+        if details is None:
+            updates.append(f"details = NULL")
+        else:
             updates.append(f"details = '{details}'")
-        if document is not None:
+        if document is None:
+            updates.append(f"document = NULL")
+        else:
             updates.append(f"document = '{document}'")
+
+        # print(f'updates: {updates}')
 
         query += ", ".join(updates)
         query += f" WHERE id = {income_id};"
@@ -147,11 +177,13 @@ class Database():
             id_expense=None,
             id_income=None,
             vat_check=0,
-            document=None,
-            details=None
+            details=None,
+            document=None
             ):
         con = sqlite3.connect("tax.db")
         cursor = con.cursor()
+
+        date = self.check_date_format(date)
 
         # Construct the UPDATE query dynamically based on provided parameters
         query = "UPDATE expense SET "
@@ -159,22 +191,39 @@ class Database():
 
         if amount is not None:
             updates.append(f"amount = {amount}")
-        if date is not None:
+        if date is None:
+            updates.append(f"date = NULL")
+        else:
             updates.append(f"date = '{date}'")
-        if deduct_percent is not None:
+        if deduct_percent is None:
+            updates.append(f"deduct_percent = NULL")
+        else:
             updates.append(f"deduct_percent = {deduct_percent}")
-        if serialnr is not None:
+        if serialnr is None:
+            updates.append(f"serialnr = NULL")
+        else:
             updates.append(f"serialnr = '{serialnr}'")
-        if id_expense is not None:
+        if id_expense is None:
+            updates.append(f"id_expense = NULL")
+        else:
             updates.append(f"id_expense = '{id_expense}'")
-        if id_income is not None:
+        if id_income is None:
+            updates.append(f"id_income = NULL")
+        else:
             updates.append(f"id_income = '{id_income}'")
-        if vat_check is not None:
-            updates.append(f"id_income = {vat_check}")
-        if details is not None:
+        if vat_check is None:
+            updates.append(f"vat_check = NULL")
+        else:
+            updates.append(f"vat_check = {vat_check}")
+        if details is None:
+            updates.append(f"details = NULL")
+        else:
             updates.append(f"details = '{details}'")
-        if document is not None:
+        if document is None:
+            updates.append(f"document = NULL")
+        else:
             updates.append(f"document = '{document}'")
+        # print(f'updates: {updates}')
 
         query += ", ".join(updates)
         query += f" WHERE id = {expense_id};"
